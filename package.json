@@ -1,0 +1,23 @@
+{
+  "name": "weather-app",
+  "version": "1.0.0",
+  "description": "weather app",
+  "main": "./bin/www.js",
+  "repository": "https://github.com/parrott-kevin/weather-app.git",
+  "author": "Kevin Parrott <parrott.kevin@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./bin/www.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "request": "^2.79.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.12.2",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1"
+  }
+}
