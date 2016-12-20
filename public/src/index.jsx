@@ -3,6 +3,7 @@ import React from 'react'
 import {render} from 'react-dom'
 import 'whatwg-fetch'
 
+import 'bulma/css/bulma.css'
 
 class App extends React.Component {
   constructor (props) {
@@ -76,22 +77,30 @@ class App extends React.Component {
       return <option value={item.label} key={item.label}></option>
     })
     return (
-      <form onSubmit={this.handleSubmit.bind(this)}>
-        <label>Enter Location
-          <input
-            id="locationInput"
-            type="text"
-            list="locations"
-            value={this.state.value}
-            data-latitude={this.state.latitude}
-            data-longitude={this.state.longitude}
-            onChange={this.getLocations.bind(this)} />
-        </label>
-        <datalist id="locations">
-        {options}
-        </datalist>
-        <input type="submit" value="Submit" />
-      </form>
+      <div className="container">
+        <div className="columns">
+          <div className="column">
+            <form onSubmit={this.handleSubmit.bind(this)}>
+              <p className="control has-addons">
+                <input
+                  id="locationInput"
+                  type="text"
+                  className="input is-expanded"
+                  list="locations"
+                  placeholder="Enter a location"
+                  value={this.state.value}
+                  data-latitude={this.state.latitude}
+                  data-longitude={this.state.longitude}
+                  onChange={this.getLocations.bind(this)} />
+                <datalist id="locations">
+                {options}
+                </datalist>
+                <input type="submit" value="Search" className="button is-primary" />
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
     )
   }
 }

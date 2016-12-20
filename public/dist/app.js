@@ -1,6 +1,6 @@
 webpackJsonp([0],{
 
-/***/ 475:
+/***/ 476:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,6 +18,8 @@ var _reactDom = __webpack_require__(91);
 
 __webpack_require__(93);
 
+__webpack_require__(478);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25,6 +27,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// import 'font-awesome'
 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
@@ -115,27 +119,40 @@ var App = function (_React$Component) {
         return _react2.default.createElement('option', { value: item.label, key: item.label });
       });
       return _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleSubmit.bind(this) },
+        'div',
+        { className: 'container' },
         _react2.default.createElement(
-          'label',
-          null,
-          'Enter Location',
-          _react2.default.createElement('input', {
-            id: 'locationInput',
-            type: 'text',
-            list: 'locations',
-            value: this.state.value,
-            'data-latitude': this.state.latitude,
-            'data-longitude': this.state.longitude,
-            onChange: this.getLocations.bind(this) })
-        ),
-        _react2.default.createElement(
-          'datalist',
-          { id: 'locations' },
-          options
-        ),
-        _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+          'div',
+          { className: 'columns' },
+          _react2.default.createElement(
+            'div',
+            { className: 'column' },
+            _react2.default.createElement(
+              'form',
+              { onSubmit: this.handleSubmit.bind(this) },
+              _react2.default.createElement(
+                'p',
+                { className: 'control has-addons' },
+                _react2.default.createElement('input', {
+                  id: 'locationInput',
+                  type: 'text',
+                  className: 'input is-expanded',
+                  list: 'locations',
+                  placeholder: 'Enter a location',
+                  value: this.state.value,
+                  'data-latitude': this.state.latitude,
+                  'data-longitude': this.state.longitude,
+                  onChange: this.getLocations.bind(this) }),
+                _react2.default.createElement(
+                  'datalist',
+                  { id: 'locations' },
+                  options
+                ),
+                _react2.default.createElement('input', { type: 'submit', value: 'Search', className: 'button is-primary' })
+              )
+            )
+          )
+        )
       );
     }
   }]);
@@ -145,6 +162,13 @@ var App = function (_React$Component) {
 
 (0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));
 
+/***/ },
+
+/***/ 478:
+/***/ function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
 /***/ }
 
-},[475]);
+},[476]);
