@@ -14,7 +14,7 @@ router.get('/autocomplete/:query', (req, res) => {
 })
 
 router.get('/conditions', (req, res) => {
-  const url = routeConfig.weatherUnderground.conditions(appConfig.apiKey, req.query.lat, req.query.long)
+  const url = routeConfig.weatherUnderground.conditions(appConfig.apiKey, req.query.latitude, req.query.longitude)
   request(url, (err, response, body) => {
     if (!err && res.statusCode === 200) {
       res.status(200).send(body)
