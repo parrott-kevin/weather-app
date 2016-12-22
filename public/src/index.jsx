@@ -5,12 +5,31 @@ import 'whatwg-fetch'
 
 import 'bulma/css/bulma.css'
 
+const WeatherDisplay = ({name, weather}) => {
+  console.log(weather)
+  return (
+    <div className="card">
+      <header className="card-header">
+        <p className="card-header-title">{name}</p>
+      </header>
+      <div className="card-content">
+        <div className="content">
+          <p>{weather.weather}</p>
+          <p>Actual {weather.temperature_string}</p>
+          <p>Feels Like {weather.feelslike_string}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       options: [],
-      value: ''
+      value: '',
+      weather: null
     }
   }
 
@@ -31,7 +50,7 @@ class App extends React.Component {
     return fetch(url)
       .then(response => response.json())
       .then(json => {
-        console.log(json)
+        this.setState({weather: json.current_observation})
       })
   }
   getLocations (event) {
@@ -98,6 +117,13 @@ class App extends React.Component {
                 <input type="submit" value="Search" className="button is-primary" />
               </p>
             </form>
+          </div>
+        </div>
+        <div className="columns">
+          <div className="column">
+            {this.state.weather &&
+              <WeatherDisplay name={this.state.value} weather={this.state.weather} />
+            }
           </div>
         </div>
       </div>

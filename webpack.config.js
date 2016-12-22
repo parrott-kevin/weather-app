@@ -8,7 +8,15 @@ const APP_DIR = path.resolve(__dirname, 'public/src')
 var config = {
   entry: {
     app: path.resolve(APP_DIR, 'index.jsx'),
-    vendor: ['babel-polyfill', 'react', 'react-dom', 'whatwg-fetch']
+    vendor: [
+      'babel-polyfill',
+      'react',
+      'react-dom',
+      'redux',
+      'react-redux',
+      'redux-thunk',
+      'redux-logger',
+      'whatwg-fetch']
   },
   output: {
     path: BUILD_DIR,
@@ -37,11 +45,6 @@ var config = {
       filename: 'vendor.js'
     }),
     new ExtractTextPlugin('styles.css')
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: true
-    //   }
-    // })
   ]
 }
 

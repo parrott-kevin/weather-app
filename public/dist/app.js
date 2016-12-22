@@ -1,6 +1,13 @@
 webpackJsonp([0],{
 
-/***/ 476:
+/***/ 209:
+/***/ function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ },
+
+/***/ 521:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8,17 +15,17 @@ webpackJsonp([0],{
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-__webpack_require__(90);
+__webpack_require__(92);
 
-var _react = __webpack_require__(92);
+var _react = __webpack_require__(57);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(91);
+var _reactDom = __webpack_require__(93);
 
-__webpack_require__(93);
+__webpack_require__(94);
 
-__webpack_require__(478);
+__webpack_require__(209);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28,7 +35,50 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import 'font-awesome'
+var WeatherDisplay = function WeatherDisplay(_ref) {
+  var name = _ref.name,
+      weather = _ref.weather;
+
+  console.log(weather);
+  return _react2.default.createElement(
+    'div',
+    { className: 'card' },
+    _react2.default.createElement(
+      'header',
+      { className: 'card-header' },
+      _react2.default.createElement(
+        'p',
+        { className: 'card-header-title' },
+        name
+      )
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'card-content' },
+      _react2.default.createElement(
+        'div',
+        { className: 'content' },
+        _react2.default.createElement(
+          'p',
+          null,
+          weather.weather
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          'Actual ',
+          weather.temperature_string
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          'Feels Like ',
+          weather.feelslike_string
+        )
+      )
+    )
+  );
+};
 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
@@ -40,7 +90,8 @@ var App = function (_React$Component) {
 
     _this.state = {
       options: [],
-      value: ''
+      value: '',
+      weather: null
     };
     return _this;
   }
@@ -62,17 +113,19 @@ var App = function (_React$Component) {
   }, {
     key: 'getWeather',
     value: function getWeather() {
+      var _this2 = this;
+
       var url = 'http://localhost:8080/api/v1/wu/conditions?latitude=' + this.state.latitude + '&longitude=' + this.state.longitude;
       return fetch(url).then(function (response) {
         return response.json();
       }).then(function (json) {
-        console.log(json);
+        _this2.setState({ weather: json.current_observation });
       });
     }
   }, {
     key: 'getLocations',
     value: function getLocations(event) {
-      var _this2 = this;
+      var _this3 = this;
 
       var input = event.target.value;
       this.setState({ value: input });
@@ -98,9 +151,9 @@ var App = function (_React$Component) {
               };
             });
             if (options.length > 10) {
-              _this2.setState({ options: options.slice(0, 9) });
+              _this3.setState({ options: options.slice(0, 9) });
             } else {
-              _this2.setState({ options: options });
+              _this3.setState({ options: options });
             }
           });
         }
@@ -152,6 +205,15 @@ var App = function (_React$Component) {
               )
             )
           )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'columns' },
+          _react2.default.createElement(
+            'div',
+            { className: 'column' },
+            this.state.weather && _react2.default.createElement(WeatherDisplay, { name: this.state.value, weather: this.state.weather })
+          )
         )
       );
     }
@@ -162,13 +224,6 @@ var App = function (_React$Component) {
 
 (0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));
 
-/***/ },
-
-/***/ 478:
-/***/ function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
 /***/ }
 
-},[476]);
+},[521]);

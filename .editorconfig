@@ -15,5 +15,5 @@ indent_style = space
 charset = utf-8
 
 # Indentation override for all JS under lib directory
-[*.{js,css,html}]
+[*.{js,jsx,css,html}]
 indent_size = 2
