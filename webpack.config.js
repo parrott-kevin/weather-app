@@ -7,7 +7,7 @@ const APP_DIR = path.resolve(__dirname, 'public/src')
 
 var config = {
   entry: {
-    app: path.resolve(APP_DIR, 'index.jsx'),
+    app: path.resolve(APP_DIR, 'indexRedux.jsx'),
     vendor: [
       'babel-polyfill',
       'react',
