@@ -1,18 +1,24 @@
 module.exports = {
-  'extends': 'standard',
-  'env': {
-    'browser': true,
-    'node': true
-  },
-  'parserOptions': {
-    'ecmaFeatures': {
-      'jsx': true,
-      'impliedStrict': true
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "jsx": true
     }
   },
-  'rules': {
-    'no-trailing-spaces': 'off',
-    'react/jsx-uses-vars': 1
+  "env": {
+    "browser": true,
+    "jquery": true,
+    "node": true,
+    "jest": true
   },
-  'plugins': ['react']
+  "plugins": [
+    "react"
+  ],
+  "extends": ["standard", "standard-react"],
+  "rules": {
+    "react/no-multi-comp": ["error", { "ignoreStateless": true }]
+  },
+  "globals": {}
 }

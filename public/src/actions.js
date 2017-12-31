@@ -5,8 +5,6 @@ export const RECEIVE_WEATHER = 'RECEIVE_WEATHER'
 export const REQUEST_LOCATIONS = 'REQUEST_LOCATIONS'
 export const RECEIVE_LOCATIONS = 'RECEIVE_LOCATIONS'
 export const QUERY_LOCATION = 'QUERY_LOCATION'
-export const REQUEST_FORECAST = 'REQUEST_FORECAST'
-export const RECEIVE_FORECAST = 'RECEIVE_FORECAST'
 
 export function queryLocation (query) {
   return {
@@ -29,51 +27,18 @@ function receiveWeather (location, json) {
     weather: json.current_observation,
     receivedAt: Date.now()
   }
-  console.log(results)
   return results
-}
-
-function requestForecast (location) {
-  return {
-    type: REQUEST_FORECAST,
-    location
-  }
-}
-
-function receiveForecast (location, json) {
-  console.log(json.forecast.simpleforecast.forecastday[0].qpf_allday.in)
-  const results = {
-    type: RECEIVE_FORECAST,
-    location,
-    forecast: json.forecast.simpleforecast.forecastday[0].qpf_allday.in >= 0.25 ? 'Grab umbrella' : 'No umbrella needed',
-    receivedAt: Date.now()
-  }
-  return results
-}
-
-function fetchForecast (zmw, location) {
-  return dispatch => {
-    dispatch(requestForecast(location))
-    const url = `http://localhost:8080/api/v1/wu/forecast?zmw=${zmw}`
-    return fetch(url)
-      .then(response => response.json())
-      .then(json => dispatch(receiveForecast(location, json)))
-  }
 }
 
 function fetchWeather (state, location) {
-  const { latitude, longitude, zmw } = state.locationsByQuery[location].items[0]
+  const { latitude, longitude } = state.locationsByQuery[location].items[0]
   return dispatch => {
     dispatch(requestWeather(location))
-    const url = `http://localhost:8080/api/v1/wu/conditions?latitude=${latitude}&longitude=${longitude}`
+    const url = `http://localhost:8000/api/v1/wu/conditions?latitude=${latitude}&longitude=${longitude}`
     return fetch(url)
       .then(response => response.json())
       .then(json => {
         dispatch(receiveWeather(location, json))
-        // dispatch(fetchForecast(zmw, location))
-      })
-      .then(() => {
-        dispatch(fetchForecast(zmw, location))
       })
   }
 }

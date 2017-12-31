@@ -1,40 +1,17 @@
 import { combineReducers } from 'redux'
 
-import { REQUEST_LOCATIONS, RECEIVE_LOCATIONS, QUERY_LOCATION, REQUEST_WEATHER, RECEIVE_WEATHER, REQUEST_FORECAST, RECEIVE_FORECAST } from './actions'
+import {
+  REQUEST_LOCATIONS,
+  RECEIVE_LOCATIONS,
+  QUERY_LOCATION,
+  REQUEST_WEATHER,
+  RECEIVE_WEATHER
+} from './actions'
 
 function queriedLocation (state = '', action) {
   switch (action.type) {
     case QUERY_LOCATION:
       return action.query
-    default:
-      return state
-  }
-}
-
-function forecast (state = { isFetching: false, forecast: '' }, action) {
-  switch (action.type) {
-    case REQUEST_FORECAST:
-      return Object.assign({}, state, {
-        isFetching: true
-      })
-    case RECEIVE_FORECAST:
-      return Object.assign({}, state, {
-        isFetching: false,
-        forecast: action.forecast,
-        lastUpdated: action.receivedAt
-      })
-    default:
-      return state
-  }
-}
-
-function forecastByLocation (state = {}, action) {
-  switch (action.type) {
-    case RECEIVE_FORECAST:
-    case REQUEST_FORECAST:
-      return Object.assign({}, {
-        [action.location]: forecast(state[action.location], action)
-      })
     default:
       return state
   }
@@ -101,8 +78,7 @@ function locationsByQuery (state = {}, action) {
 const rootReducer = combineReducers({
   weatherByLocation,
   locationsByQuery,
-  queriedLocation,
-  forecastByLocation
+  queriedLocation
 })
 
 export default rootReducer
