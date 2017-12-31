@@ -22,4 +22,13 @@ router.get('/conditions', (req, res) => {
   })
 })
 
+router.get('/forecast', (req, res) => {
+  const url = routeConfig.weatherUnderground.forecast(appConfig.apiKey, req.query.zmw)
+  request(url, (err, response, body) => {
+    if (!err && res.statusCode === 200) {
+      res.status(200).send(body)
+    }
+  })
+})
+
 module.exports = router

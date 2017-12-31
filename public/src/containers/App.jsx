@@ -24,12 +24,11 @@ class App extends React.Component {
 
   handleSubmit (event) {
     event.preventDefault()
-    console.log(this.props)
     this.props.dispatch(fetchWeatherIfNeeded(this.props.query))
   }
 
   render () {
-    const { query, locations, weather, isFetching } = this.props
+    const { query, locations, weather, isFetching, forecast } = this.props
     const options = locations.map((item) => {
       return <option value={item.name} key={item.name}></option>
     })
@@ -57,7 +56,7 @@ class App extends React.Component {
         </div>
         <div className="columns">
           <div className="column">
-            {!isFetching && <WeatherDisplay name={query} weather={weather} />}
+            {!isFetching && <WeatherDisplay name={query} weather={weather} forecast={forecast} />}
           </div>
         </div>
       </div>
@@ -66,14 +65,17 @@ class App extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { locationsByQuery, queriedLocation: query, weatherByLocation } = state
+  const { locationsByQuery, queriedLocation: query, weatherByLocation, forecastByLocation } = state
   const { items: locations } = locationsByQuery[query] || { items: [] }
   const { isFetching, weather } = weatherByLocation[query] || { isFetching: true, weather: {} }
+  console.log(forecastByLocation)
+  const { forecast } = forecastByLocation[query] || { forecast: '' }
   return {
     query,
     locations,
     isFetching,
-    weather
+    weather,
+    forecast
   }
 }
 

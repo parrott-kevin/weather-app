@@ -9,7 +9,7 @@ webpackJsonp([0],{
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.QUERY_LOCATION = exports.RECEIVE_LOCATIONS = exports.REQUEST_LOCATIONS = exports.RECEIVE_WEATHER = exports.REQUEST_WEATHER = undefined;
+exports.RECEIVE_FORECAST = exports.REQUEST_FORECAST = exports.QUERY_LOCATION = exports.RECEIVE_LOCATIONS = exports.REQUEST_LOCATIONS = exports.RECEIVE_WEATHER = exports.REQUEST_WEATHER = undefined;
 exports.queryLocation = queryLocation;
 exports.fetchWeatherIfNeeded = fetchWeatherIfNeeded;
 exports.fetchLocationsIfNeeded = fetchLocationsIfNeeded;
@@ -21,6 +21,8 @@ var RECEIVE_WEATHER = exports.RECEIVE_WEATHER = 'RECEIVE_WEATHER';
 var REQUEST_LOCATIONS = exports.REQUEST_LOCATIONS = 'REQUEST_LOCATIONS';
 var RECEIVE_LOCATIONS = exports.RECEIVE_LOCATIONS = 'RECEIVE_LOCATIONS';
 var QUERY_LOCATION = exports.QUERY_LOCATION = 'QUERY_LOCATION';
+var REQUEST_FORECAST = exports.REQUEST_FORECAST = 'REQUEST_FORECAST';
+var RECEIVE_FORECAST = exports.RECEIVE_FORECAST = 'RECEIVE_FORECAST';
 
 function queryLocation(query) {
   return {
@@ -47,10 +49,41 @@ function receiveWeather(location, json) {
   return results;
 }
 
+function requestForecast(location) {
+  return {
+    type: REQUEST_FORECAST,
+    location: location
+  };
+}
+
+function receiveForecast(location, json) {
+  console.log(json.forecast.simpleforecast.forecastday[0].qpf_allday.in);
+  var results = {
+    type: RECEIVE_FORECAST,
+    location: location,
+    forecast: json.forecast.simpleforecast.forecastday[0].qpf_allday.in >= 0.25 ? 'Grab umbrella' : 'No umbrella needed',
+    receivedAt: Date.now()
+  };
+  return results;
+}
+
+function fetchForecast(zmw, location) {
+  return function (dispatch) {
+    dispatch(requestForecast(location));
+    var url = 'http://localhost:8080/api/v1/wu/forecast?zmw=' + zmw;
+    return fetch(url).then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      return dispatch(receiveForecast(location, json));
+    });
+  };
+}
+
 function fetchWeather(state, location) {
   var _state$locationsByQue = state.locationsByQuery[location].items[0],
       latitude = _state$locationsByQue.latitude,
-      longitude = _state$locationsByQue.longitude;
+      longitude = _state$locationsByQue.longitude,
+      zmw = _state$locationsByQue.zmw;
 
   return function (dispatch) {
     dispatch(requestWeather(location));
@@ -59,6 +92,9 @@ function fetchWeather(state, location) {
       return response.json();
     }).then(function (json) {
       dispatch(receiveWeather(location, json));
+      // dispatch(fetchForecast(zmw, location))
+    }).then(function () {
+      dispatch(fetchForecast(zmw, location));
     });
   };
 }
@@ -91,7 +127,8 @@ function receiveLocations(query, json) {
     return {
       name: item.name,
       latitude: item.lat,
-      longitude: item.lon
+      longitude: item.lon,
+      zmw: item.zmw
     };
   });
   var results = {
@@ -226,8 +263,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var WeatherDisplay = exports.WeatherDisplay = function WeatherDisplay(_ref) {
   var name = _ref.name,
-      weather = _ref.weather;
+      weather = _ref.weather,
+      forecast = _ref.forecast;
 
+  console.log(forecast);
   return _react2.default.createElement(
     "div",
     { className: "card" },
@@ -262,6 +301,11 @@ var WeatherDisplay = exports.WeatherDisplay = function WeatherDisplay(_ref) {
           null,
           "Feels Like ",
           weather.feelslike_string
+        ),
+        _react2.default.createElement(
+          "p",
+          null,
+          forecast
         )
       )
     )
@@ -368,7 +412,6 @@ var App = function (_React$Component) {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
       event.preventDefault();
-      console.log(this.props);
       this.props.dispatch((0, _actions.fetchWeatherIfNeeded)(this.props.query));
     }
   }, {
@@ -378,7 +421,8 @@ var App = function (_React$Component) {
           query = _props2.query,
           locations = _props2.locations,
           weather = _props2.weather,
-          isFetching = _props2.isFetching;
+          isFetching = _props2.isFetching,
+          forecast = _props2.forecast;
 
       var options = locations.map(function (item) {
         return _react2.default.createElement('option', { value: item.name, key: item.name });
@@ -422,7 +466,7 @@ var App = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'column' },
-            !isFetching && _react2.default.createElement(_WeatherDisplay.WeatherDisplay, { name: query, weather: weather })
+            !isFetching && _react2.default.createElement(_WeatherDisplay.WeatherDisplay, { name: query, weather: weather, forecast: forecast })
           )
         )
       );
@@ -435,7 +479,8 @@ var App = function (_React$Component) {
 function mapStateToProps(state) {
   var locationsByQuery = state.locationsByQuery,
       query = state.queriedLocation,
-      weatherByLocation = state.weatherByLocation;
+      weatherByLocation = state.weatherByLocation,
+      forecastByLocation = state.forecastByLocation;
 
   var _ref = locationsByQuery[query] || { items: [] },
       locations = _ref.items;
@@ -444,11 +489,17 @@ function mapStateToProps(state) {
       isFetching = _ref2.isFetching,
       weather = _ref2.weather;
 
+  console.log(forecastByLocation);
+
+  var _ref3 = forecastByLocation[query] || { forecast: '' },
+      forecast = _ref3.forecast;
+
   return {
     query: query,
     locations: locations,
     isFetching: isFetching,
-    weather: weather
+    weather: weather,
+    forecast: forecast
   };
 }
 
@@ -479,6 +530,39 @@ function queriedLocation() {
   switch (action.type) {
     case _actions.QUERY_LOCATION:
       return action.query;
+    default:
+      return state;
+  }
+}
+
+function forecast() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { isFetching: false, forecast: '' };
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.REQUEST_FORECAST:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case _actions.RECEIVE_FORECAST:
+      return Object.assign({}, state, {
+        isFetching: false,
+        forecast: action.forecast,
+        lastUpdated: action.receivedAt
+      });
+    default:
+      return state;
+  }
+}
+
+function forecastByLocation() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.RECEIVE_FORECAST:
+    case _actions.REQUEST_FORECAST:
+      return Object.assign({}, _defineProperty({}, action.location, forecast(state[action.location], action)));
     default:
       return state;
   }
@@ -553,7 +637,8 @@ function locationsByQuery() {
 var rootReducer = (0, _redux.combineReducers)({
   weatherByLocation: weatherByLocation,
   locationsByQuery: locationsByQuery,
-  queriedLocation: queriedLocation
+  queriedLocation: queriedLocation,
+  forecastByLocation: forecastByLocation
 });
 
 exports.default = rootReducer;
