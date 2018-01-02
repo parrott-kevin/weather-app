@@ -1,65 +1,87 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import Select from 'react-select'
+import 'react-select/dist/react-select.css'
 
 import { WeatherDisplay } from '../components/WeatherDisplay.jsx'
-import { fetchWeatherIfNeeded, fetchLocationsIfNeeded, queryLocation } from '../actions'
+import {
+  queryLocation,
+  clearQuery,
+  gather,
+  REQUEST_LOCATIONS,
+  RECEIVE_LOCATIONS,
+  REQUEST_WEATHER,
+  RECEIVE_WEATHER
+} from '../actions'
+
+import WeatherUnderground from '../api'
+
+const wu = new WeatherUnderground()
 
 class App extends React.Component {
   constructor (props) {
     super(props)
+    this.handleInputChange = this.handleInputChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  componentDidMount () {
-    const { dispatch, selectedLocation } = this.props
-    dispatch(fetchLocationsIfNeeded(selectedLocation))
-  }
-
-  handleChange (event) {
+  handleInputChange (input) {
     const { dispatch } = this.props
-    const input = event.target.value
-    dispatch(queryLocation(input))
-    dispatch(fetchLocationsIfNeeded(input))
+    if (input) {
+      const actions = {
+        request: REQUEST_LOCATIONS,
+        receive: RECEIVE_LOCATIONS
+      }
+      dispatch(gather(actions, wu.getLocations(input)))
+    }
   }
 
-  handleSubmit (event) {
-    const { dispatch, query } = this.props
-    event.preventDefault()
-    dispatch(fetchWeatherIfNeeded(query))
+  handleChange (selectedOption) {
+    const { dispatch, locations } = this.props
+
+    if (selectedOption) {
+      dispatch(queryLocation(selectedOption.value))
+
+      const location = locations.list.find(item => {
+        return item.name === selectedOption.value
+      })
+      const actions = {
+        request: REQUEST_WEATHER,
+        receive: RECEIVE_WEATHER
+      }
+      dispatch(gather(actions, wu.getWeather(location.lat, location.lon)))
+    } else {
+      dispatch(clearQuery())
+    }
   }
 
   render () {
-    const { query, locations, weather, isFetching } = this.props
-    const options = locations.map((item) => {
-      return <option value={item.name} key={item.name} />
+    const { query, locations, weather } = this.props
+
+    const selectedOptions = locations.list.map(item => {
+      return {
+        value: item.name,
+        label: item.name
+      }
     })
     return (
       <div className='container'>
         <div className='columns'>
           <div className='column'>
-            <form onSubmit={this.handleSubmit} autoComplete='off'>
-              <p className='control has-addons'>
-                <input
-                  id='locationInput'
-                  type='text'
-                  className='input is-expanded'
-                  list='locations'
-                  placeholder='Enter a location'
-                  value={query}
-                  onChange={this.handleChange} />
-                <datalist id='locations'>
-                  {options}
-                </datalist>
-                <input type='submit' value='Search' className='button is-primary' />
-              </p>
-            </form>
+            <Select
+              name='form-field-name'
+              value={query}
+              onChange={this.handleChange}
+              onInputChange={this.handleInputChange}
+              options={selectedOptions}
+              isLoading={locations.isFetching}
+            />
           </div>
         </div>
         <div className='columns'>
           <div className='column'>
-            {!isFetching && <WeatherDisplay name={query} weather={weather} />}
+            <WeatherDisplay name={query} weather={weather} />
           </div>
         </div>
       </div>
@@ -69,21 +91,16 @@ class App extends React.Component {
 
 App.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  selectedLocation: PropTypes.string,
   query: PropTypes.string,
-  locations: PropTypes.array,
-  weather: PropTypes.object,
-  isFetching: PropTypes.bool
+  locations: PropTypes.object,
+  weather: PropTypes.object
 }
 
 function mapStateToProps (state) {
-  const { locationsByQuery, queriedLocation: query, weatherByLocation } = state
-  const { items: locations } = locationsByQuery[query] || { items: [] }
-  const { isFetching, weather } = weatherByLocation[query] || { isFetching: true, weather: {} }
+  const { locations, queriedLocation: query, weather } = state
   return {
     query,
     locations,
-    isFetching,
     weather
   }
 }

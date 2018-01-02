@@ -20,7 +20,8 @@ const baseConfig = {
       'redux',
       'react-redux',
       'redux-thunk',
-      'redux-logger'
+      'redux-logger',
+      'react-select'
     ]
   },
   output: {
@@ -97,17 +98,19 @@ const baseConfig = {
   },
   devtool: 'cheap-module-source-map',
   plugins: [
-    new webpack.DefinePlugin({}),
+    new webpack.DefinePlugin({
+      'API_PORT': 8000
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor'],
       minChunks: Infinity
     }),
     new ExtractTextPlugin('[contenthash].styles.css'),
     // Provides access to jquery as global with the following aliases
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery'
-    }),
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery'
+    // }),
     new HtmlWebpackPlugin({
       template: './public/src/index.ejs'
     }),
@@ -122,7 +125,7 @@ const developmentBuild = baseConfig => {
       port: 8000,
       proxy: {
         '/api': {
-          target: 'http://localhost:8080'
+          target: 'http://localhost:9000'
         }
       },
       historyApiFallback: true,

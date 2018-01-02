@@ -5,19 +5,22 @@ import {
   RECEIVE_LOCATIONS,
   QUERY_LOCATION,
   REQUEST_WEATHER,
-  RECEIVE_WEATHER
+  RECEIVE_WEATHER,
+  CLEAR_QUERY
 } from './actions'
 
 function queriedLocation (state = '', action) {
   switch (action.type) {
     case QUERY_LOCATION:
       return action.query
+    case CLEAR_QUERY:
+      return ''
     default:
       return state
   }
 }
 
-function weather (state = { isFetching: false, weather: {} }, action) {
+function weather (state = { isFetching: false, currentObservation: {} }, action) {
   switch (action.type) {
     case REQUEST_WEATHER:
       return Object.assign({}, state, {
@@ -26,27 +29,20 @@ function weather (state = { isFetching: false, weather: {} }, action) {
     case RECEIVE_WEATHER:
       return Object.assign({}, state, {
         isFetching: false,
-        weather: action.weather,
-        lastUpdated: action.receivedAt
+        currentObservation: action.response.current_observation,
+        receivedAt: action.receivedAt
       })
+    case CLEAR_QUERY:
+      return {
+        isFetching: false,
+        currentObservation: {}
+      }
     default:
       return state
   }
 }
 
-function weatherByLocation (state = {}, action) {
-  switch (action.type) {
-    case RECEIVE_WEATHER:
-    case REQUEST_WEATHER:
-      return Object.assign({}, {
-        [action.location]: weather(state[action.location], action)
-      })
-    default:
-      return state
-  }
-}
-
-function locations (state = { isFetching: false, items: [] }, action) {
+function locations (state = { isFetching: false, list: [] }, action) {
   switch (action.type) {
     case REQUEST_LOCATIONS:
       return Object.assign({}, state, {
@@ -55,29 +51,22 @@ function locations (state = { isFetching: false, items: [] }, action) {
     case RECEIVE_LOCATIONS:
       return Object.assign({}, state, {
         isFetching: false,
-        items: action.locations,
-        lastUpdated: action.receivedAt
+        list: action.response.RESULTS,
+        receivedAt: action.receivedAt
       })
-    default:
-      return state
-  }
-}
-
-function locationsByQuery (state = {}, action) {
-  switch (action.type) {
-    case RECEIVE_LOCATIONS:
-    case REQUEST_LOCATIONS:
-      return Object.assign({}, state, {
-        [action.query]: locations(state[action.query], action)
-      })
+    case CLEAR_QUERY:
+      return {
+        isFetching: false,
+        list: []
+      }
     default:
       return state
   }
 }
 
 const rootReducer = combineReducers({
-  weatherByLocation,
-  locationsByQuery,
+  weather,
+  locations,
   queriedLocation
 })
 

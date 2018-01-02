@@ -20,5 +20,7 @@ module.exports = {
   "rules": {
     "react/no-multi-comp": ["error", { "ignoreStateless": true }]
   },
-  "globals": {}
+  "globals": {
+    'API_PORT': true
+  }
 }

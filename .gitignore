@@ -37,4 +37,4 @@ jspm_packages
 .node_repl_history
 
 # Configuration directory
-config/app.js
+secrets.json
