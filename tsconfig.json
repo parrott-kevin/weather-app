@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "lib": [
+      "dom",
+      "es2017"
+    ],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./public/dist/",
+    "sourceMap": true,
+    "target": "es5",
+  },
+  "include": [
+    "./public/src/**/*"
+  ]
+}

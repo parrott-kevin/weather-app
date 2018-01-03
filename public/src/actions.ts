@@ -21,16 +21,14 @@ export function gather (actions, apiPromise) {
 }
 
 export function request (type) {
-  return {
-    type
-  }
+  return { type }
 }
 
 export function receive (type, response) {
   return {
     type,
     response,
-    receivedAt: (new Date()).toJSON().toString()
+    receivedAt: (new Date()).toJSON().toString(),
   }
 }
 
@@ -39,19 +37,17 @@ export function serverError ({ ok, status, message }) {
     type: SERVER_ERROR,
     ok,
     status,
-    message
+    message,
   }
 }
 
 export function queryLocation (query) {
   return {
     type: QUERY_LOCATION,
-    query
+    query,
   }
 }
 
 export function clearQuery () {
-  return {
-    type: CLEAR_QUERY
-  }
+  return { type: CLEAR_QUERY }
 }

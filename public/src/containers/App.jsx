@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 
-import { WeatherDisplay } from '../components/WeatherDisplay.jsx'
+import WeatherDisplay from '../components/WeatherDisplay'
 import {
   queryLocation,
   clearQuery,

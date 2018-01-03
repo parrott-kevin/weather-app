@@ -30,8 +30,20 @@ const baseConfig = {
     publicPath: '/',
     sourceMapFilename: '[file].map'
   },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', 'jsx', '.json']
+  },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader'
+      },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader'
+      },
       {
         test: /\.jsx?$/,
         include: SRC_DIR,

@@ -8,4 +8,4 @@ import 'bulma/css/bulma.css'
 
 import Root from './containers/Root.jsx'
 
-render(<Root />, document.getElementById('app'))
+render(<Root compiler='TypeScript' framework='React' />, document.getElementById('app'))
