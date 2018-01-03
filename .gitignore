@@ -38,3 +38,4 @@ jspm_packages
 
 # Configuration directory
 secrets.json
+public/dist/
