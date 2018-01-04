@@ -6,6 +6,6 @@ import {render} from 'react-dom'
 
 import 'bulma/css/bulma.css'
 
-import Root from './containers/Root.jsx'
+import Root from './containers/Root'
 
-render(<Root compiler='TypeScript' framework='React' />, document.getElementById('app'))
+render(<Root />, document.getElementById('app'))

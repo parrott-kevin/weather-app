@@ -10,7 +10,7 @@ process.traceDeprecation = true
 
 const baseConfig = {
   entry: {
-    app: path.resolve(SRC_DIR, 'index.jsx'),
+    app: path.resolve(SRC_DIR, 'index.tsx'),
     vendor: [
       'babel-polyfill',
       'whatwg-fetch',
@@ -43,11 +43,6 @@ const baseConfig = {
         enforce: 'pre',
         test: /\.js$/,
         loader: 'source-map-loader'
-      },
-      {
-        test: /\.jsx?$/,
-        include: SRC_DIR,
-        loader: 'babel-loader'
       },
       {
         test: /\.css$/,

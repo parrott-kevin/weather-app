@@ -1,43 +1,57 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 
 import WeatherDisplay from '../components/WeatherDisplay'
 import {
-  queryLocation,
   clearQuery,
   gather,
-  REQUEST_LOCATIONS,
+  queryLocation,
   RECEIVE_LOCATIONS,
+  RECEIVE_WEATHER,
+  REQUEST_LOCATIONS,
   REQUEST_WEATHER,
-  RECEIVE_WEATHER
 } from '../actions'
 
 import WeatherUnderground from '../api'
 
+import { ILocations, IWeather } from '../reducers'
+import { Dispatch } from 'redux'
+
 const wu = new WeatherUnderground()
 
-class App extends React.Component {
-  constructor (props) {
+interface ISelectedOption {
+  value: string,
+  label: string
+}
+
+interface IProps {
+  dispatch: Dispatch<any>,
+  locations: ILocations,
+  query: string,
+  weather: IWeather
+}
+
+class App extends Component <IProps, {}> {
+  constructor (props: any) {
     super(props)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
 
-  handleInputChange (input) {
+  public handleInputChange (input: string) {
     const { dispatch } = this.props
     if (input) {
       const actions = {
         request: REQUEST_LOCATIONS,
-        receive: RECEIVE_LOCATIONS
+        receive: RECEIVE_LOCATIONS,
       }
       dispatch(gather(actions, wu.getLocations(input)))
     }
   }
 
-  handleChange (selectedOption) {
+  public handleChange (selectedOption: ISelectedOption) {
     const { dispatch, locations } = this.props
 
     if (selectedOption) {
@@ -48,7 +62,7 @@ class App extends React.Component {
       })
       const actions = {
         request: REQUEST_WEATHER,
-        receive: RECEIVE_WEATHER
+        receive: RECEIVE_WEATHER,
       }
       dispatch(gather(actions, wu.getWeather(location.lat, location.lon)))
     } else {
@@ -56,13 +70,13 @@ class App extends React.Component {
     }
   }
 
-  render () {
+  public render () {
     const { query, locations, weather } = this.props
 
-    const selectedOptions = locations.list.map(item => {
+    const selectedOptions: ISelectedOption[] = locations.list.map(item => {
       return {
         value: item.name,
-        label: item.name
+        label: item.name,
       }
     })
     return (
@@ -76,6 +90,7 @@ class App extends React.Component {
               onInputChange={this.handleInputChange}
               options={selectedOptions}
               isLoading={locations.isFetching}
+              autoFocus={true}
             />
           </div>
         </div>
@@ -89,19 +104,18 @@ class App extends React.Component {
   }
 }
 
-App.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  query: PropTypes.string,
-  locations: PropTypes.object,
-  weather: PropTypes.object
+interface IState {
+  locations: ILocations,
+  queriedLocation: string,
+  weather: object
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state: IState) {
   const { locations, queriedLocation: query, weather } = state
   return {
     query,
     locations,
-    weather
+    weather,
   }
 }
 

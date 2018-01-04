@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import { IWeather } from '../reducers'
 
 interface IProps {
   name: string
-  weather: any
+  weather: IWeather
 }
 
 export default class WeatherDisplay extends Component <IProps, {}> {

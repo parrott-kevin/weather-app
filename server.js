@@ -48,7 +48,7 @@ router.get('/conditions', wrapAsync(async (req, res) => {
 app.use('/api/v1/wu', router)
 
 app.use((error, req, res, next) => {
-  console.log(error)
+  console.log(error.message)
   res.status(500).json({ message: error.message })
 })
 

@@ -2,14 +2,16 @@ import { combineReducers } from 'redux'
 
 import {
   CLEAR_QUERY,
+  IQueryLocation,
   QUERY_LOCATION,
+  IReceive,
   RECEIVE_LOCATIONS,
   RECEIVE_WEATHER,
   REQUEST_LOCATIONS,
   REQUEST_WEATHER,
 } from './actions'
 
-function queriedLocation (state = '', action) {
+function queriedLocation (state = '', action: IQueryLocation) {
   switch (action.type) {
     case QUERY_LOCATION:
       return action.query
@@ -20,7 +22,19 @@ function queriedLocation (state = '', action) {
   }
 }
 
-function weather (state = { isFetching: false, currentObservation: {} }, action) {
+interface ICurrentObservation {
+  weather?: string,
+  temperature_string?: string,
+  feelslike_string?: string
+}
+
+export interface IWeather {
+  isFetching: boolean,
+  currentObservation: ICurrentObservation,
+  receivedAt?: any
+}
+
+function weather (state: IWeather = { isFetching: false, currentObservation: {} }, action: IReceive) {
   switch (action.type) {
     case REQUEST_WEATHER:
       return Object.assign({}, state, {
@@ -42,7 +56,19 @@ function weather (state = { isFetching: false, currentObservation: {} }, action)
   }
 }
 
-function locations (state = { isFetching: false, list: [] }, action) {
+interface IWeatherUndergroundConditions {
+  name: string,
+  lat: string,
+  lon: string
+}
+
+export interface ILocations {
+  isFetching: boolean,
+  list: IWeatherUndergroundConditions[],
+  receivedAt?: string,
+}
+
+function locations (state: ILocations = { isFetching: false, list: [] }, action: IReceive): ILocations {
   switch (action.type) {
     case REQUEST_LOCATIONS:
       return Object.assign({}, state, {
